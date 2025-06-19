@@ -26,12 +26,9 @@
 /* Specify the memory areas */
 MEMORY
 {
-/* FLASH   (rx) : ORIGIN =  0x8000000, LENGTH = 1024K */
-/* RAM    (xrw) : ORIGIN = 0x20000000, LENGTH =   96K  */
-/* RAM0   (xrw) : ORIGIN = 0x10000000, LENGTH =   32K-256 */
-FLASH   (rx) : ORIGIN =  0x8050000, LENGTH =  704K
-RAM    (xrw) : ORIGIN = 0x10000000, LENGTH =    8K
-QSPI    (rx) : ORIGIN = 0x90000000, LENGTH = 2048K
+  FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 2048K   /* STM32U385 has 2MB internal */
+  RAM (xrw)   : ORIGIN = 0x20000000, LENGTH = 640K    /* Actual: 640KB SRAM (STM32U385) */
+  QSPI (rx)   : ORIGIN = 0x90000000, LENGTH = 16M     /* Supports up to 16MB QSPI */
 }
 
 /* Entry Point */
@@ -41,6 +38,12 @@ ENTRY(Program_Entry)
 /* Define output sections */
 SECTIONS
 {
+  /* Vector table must be at 0x08000000 */
+  .isr_vector : {
+    . = ALIGN(4);
+    KEEP(*(.isr_vector))
+  } >FLASH
+
 
   .qspi :
   {
@@ -64,13 +67,14 @@ SECTIONS
     *(.rodata.bid_multipliers1_bid64)
     *(.rodata.bid_multipliers2_binary128)
 /* ===== Addition by c3d =================== */
+    *(.rodata.firmware_header)  /* For ST bootloader */
     *(.fonts)
     *(.rodata._Z*)
 /* ======================== */
     . = ALIGN(8);
     _qspi_end = .;         /* define a global symbols at end of qspi */
 
-  } >QSPI /* AT> FLASH */
+  } >FLASH
 
   /* Constant data goes into FLASH */
   .rodata :

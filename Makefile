@@ -559,6 +559,10 @@ clean:
 -include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
 .PHONY: clean all
+
+flash: build/dm42/release/$(TARGET).elf probe-rs
+	probe-rs/target/release/probe-rs run --connect-under-reset --chip STM32U385RGTx build/dm42/release/$(TARGET).elf
+
 .ALWAYS:
 
 # *** EOF ***

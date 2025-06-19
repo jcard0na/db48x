@@ -32,7 +32,10 @@ PRODUCTS=ttf2font.exe
 
 PKGCONFIGS=freetype2
 
-INCLUDES=../../src
+INCLUDES=../../src \
+   /opt/homebrew/opt/freetype/include/freetype2
+
+LDFLAGS= -L/opt/homebrew/opt/freetype/lib
 
 MIQ=../../recorder/make-it-quick/
 include $(MIQ)rules.mk
