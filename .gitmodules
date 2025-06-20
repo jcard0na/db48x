@@ -10,3 +10,6 @@
 [submodule "emsdk"]
 	path = emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "orcos"]
+	path = orcos
+	url = git@github.com:jcard0na/orcos.git
